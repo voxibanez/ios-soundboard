@@ -70,9 +70,9 @@ struct SoundButtonView : View{
         else{
             Button(action: onClick){
                 ZStack{
-                    (viewModel.buttonPressed ? sound.playing ? playColor : playColor.opacity(0.3) : playColor.opacity(0.0))
+                    (viewModel.buttonPressed ? sound.playing ? playColor : playColor.opacity(0.4) : playColor.opacity(0.0))
                         .animation(.easeInOut(duration: 0.1), value: viewModel.buttonPressed)
-                        .animation(.easeInOut(duration: 0.5), value: sound.playing)
+                        .animation(.easeInOut(duration: 0.3), value: sound.playing)
                         
                     Text(viewModel.attributes.name!).foregroundColor(.white)
                     
@@ -84,7 +84,6 @@ struct SoundButtonView : View{
                 .frame(width: getWidth(), height: getHeight())
                 .background(Color.gray)
                 .cornerRadius(15)
-                .padding()
                 .rotationEffect(.degrees(angle))
                 .onAppear(){
                     if viewModel.editMode{
@@ -297,6 +296,14 @@ class SoundButton: Hashable, ObservableObject {
         }
 }
 
+struct ViewOffsetKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue = CGFloat.zero
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value += nextValue()
+    }
+}
+
 struct SoundGridView: View {
     @ObservedObject var viewModel: SoundGridManager
     @Binding var soundButtonSize: Float
@@ -324,7 +331,7 @@ struct SoundGridView: View {
     var body: some View {
                 GeometryReader { geometry in
                         ScrollViewReader { reader in
-                            ScrollView(viewModel.isSoundPlaying ? [] : .horizontal
+                            ScrollView(.horizontal
                                        , showsIndicators: true) {
                                 ZStack(alignment: .topLeading){
                                     ZStack(alignment: .topLeading){
@@ -344,15 +351,28 @@ struct SoundGridView: View {
                                     getPadding()
                                     Color.clear
                                 }.fixedSize(horizontal: false, vertical: false)
+                                .background(GeometryReader {
+                                        Color.clear.preference(key: ViewOffsetKey.self,
+                                            value: -$0.frame(in: .named("scroll")).origin.x)
+                                    })
+                                .onPreferenceChange(ViewOffsetKey.self) { _ in
+                                    // All sounds must be stopped when scrolling due to the gesture recognizer losing the position of touches.
+                                    // Otherwise, touches will get perminently stuck on
+                                    viewModel.stopAllSounds()
+                                    
+                                }
                             }.introspectScrollView(){ scrollview in
                                 scrollview.isPagingEnabled = true
                                 scrollview.showsHorizontalScrollIndicator = true
                                 scrollview.horizontalScrollIndicatorInsets = .zero
                                 scrollview.alwaysBounceHorizontal = true
                             }
+                            .coordinateSpace(name: "scroll")
+
                             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
                                 //Orient scrollview to nearest page
                                 print("Setting to closest page in orientation")
+                                // TODO: Calculate nearest page instead of scrolling to first page
                                 reader.scrollTo(0, anchor: .leading)
                             }
                         }
@@ -496,7 +516,9 @@ struct SoundGridView: View {
                 }
                 .modifier(RemoveHidingModifier(soundButton: soundButton))
             
-        }.onAppear(){
+        }
+        .padding()
+        .onAppear(){
             soundButton.triggerEditingSync()
         }
         .modifier(SoundButtonHidingModifier(soundButton: soundButton))
@@ -504,7 +526,6 @@ struct SoundGridView: View {
     }
     
     private func movableItem(for soundButton: SoundButton) -> some View {
-        
             ZStack{
                 SoundButtonView(viewModel: soundButton, sound: soundButton.sound, scalar: $soundButtonSize)
             
