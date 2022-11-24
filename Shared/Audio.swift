@@ -216,10 +216,10 @@ class AudioSample : ObservableObject {
     }
     
     func setEndOffset(endOffset: Int64){
-        if endOffset < 0{
+        if endOffset <= 0{
             return
         }
-        self.endOffset = max(self.startOffset + 1, self.endOffset)
+        self.endOffset = max(self.startOffset + 1, endOffset)
     }
     
     func enableReverb(enable: Bool){
@@ -312,14 +312,10 @@ class AudioSample : ObservableObject {
             guard self.engine.isRunning else {return}
             self.bypass(enable: false)
             self.playerNode.scheduleSegment(self.audioFile!, startingFrame: self.startOffset, frameCount: AVAudioFrameCount(self.endOffset - self.startOffset), at: nil)
-            if self.engine.isRunning{
-                self.sampleStart = self.playerNode.lastRenderTime!.sampleTime
-                self.playerNode.play()
-                DispatchQueue.main.async {
-                    self.playing = true
-                }
-            } else {
-                print ("engine not running")
+            self.sampleStart = self.playerNode.lastRenderTime!.sampleTime
+            self.playerNode.play()
+            DispatchQueue.main.async {
+                self.playing = true
             }
             Task{
                 // 120 fps is 0.008, set to half to prevent aliasing
