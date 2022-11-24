@@ -10,7 +10,7 @@ import AVFoundation
 import SwiftUI
 import Waveform
 
-struct WaveformEditor2 : View{
+struct WaveformEditor : View{
     var waveformGenerator: WaveformGenerator?
     @ObservedObject var audioSample: AudioSample
     @State var attributes: SoundAttributes
@@ -68,5 +68,5 @@ struct WaveformEditor2 : View{
                 Text("Error loading waveform")
             }
         }
-    } 
+    }
 }

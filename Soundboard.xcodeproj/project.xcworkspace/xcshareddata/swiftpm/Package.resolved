@@ -1,23 +1,16 @@
 {
-  "pins" : [
-    {
-      "identity" : "fdwaveformview",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/fulldecent/FDWaveformView",
-      "state" : {
-        "branch" : "master",
-        "revision" : "b26a57aa95a708c29a59812acb37129b09f83c87"
+  "object": {
+    "pins": [
+      {
+        "package": "Introspect",
+        "repositoryURL": "https://github.com/siteline/SwiftUI-Introspect",
+        "state": {
+          "branch": null,
+          "revision": "f2616860a41f9d9932da412a8978fec79c06fe24",
+          "version": "0.1.4"
+        }
       }
-    },
-    {
-      "identity" : "swiftui-introspect",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/siteline/SwiftUI-Introspect",
-      "state" : {
-        "revision" : "f2616860a41f9d9932da412a8978fec79c06fe24",
-        "version" : "0.1.4"
-      }
-    }
-  ],
-  "version" : 2
+    ]
+  },
+  "version": 1
 }

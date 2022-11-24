@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import CoreData
-import FDWaveformView
 
 struct SoundFileSettingsView : View{
     @State var attributes: SoundAttributes
@@ -59,7 +58,7 @@ struct SoundSettingsView : View{
                 }
                 
             }
-            WaveformEditor2(audioSample: audioSample, attributes: attributes)
+            WaveformEditor(audioSample: audioSample, attributes: attributes)
             NavigationView{
                 Form{
                     NavigationLink(destination: ReverbEffectSettingsview(attributes: attributes, name: "Reverb", updateSettings: updateSettings)) {
