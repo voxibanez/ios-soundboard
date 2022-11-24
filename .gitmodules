@@ -1,0 +1,3 @@
+[submodule "libraries/waveform"]
+	path = libraries/waveform
+	url = git@github.com:voxibanez/Waveform.git

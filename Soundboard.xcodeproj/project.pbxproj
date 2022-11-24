@@ -29,8 +29,10 @@
 		228BF4C9292B114D00B04B86 /* Waveform2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228BF4C7292B114D00B04B86 /* Waveform2.swift */; };
 		228BF4D1292B231800B04B86 /* SoundSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226C1A6D2725E697001E7B15 /* SoundSettings.swift */; };
 		228BF4D2292B231900B04B86 /* SoundSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226C1A6D2725E697001E7B15 /* SoundSettings.swift */; };
-		228BF4D8292B2EC600B04B86 /* Waveform in Frameworks */ = {isa = PBXBuildFile; productRef = 228BF4D7292B2EC600B04B86 /* Waveform */; };
 		229124F7291498E70007547A /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 229124F6291498E70007547A /* Introspect */; };
+		22A28816292F2CED00673322 /* Waveform in Frameworks */ = {isa = PBXBuildFile; productRef = 22A28815292F2CED00673322 /* Waveform */; };
+		22A28818292F2CF300673322 /* Waveform in Frameworks */ = {isa = PBXBuildFile; productRef = 22A28817292F2CF300673322 /* Waveform */; };
+		22A2881A292F2CF600673322 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 22A28819292F2CF600673322 /* Introspect */; };
 		22DAE65F27128EB500C279BB /* SoundBoard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 22DAE65D27128EB500C279BB /* SoundBoard.xcdatamodeld */; };
 		22DAE66027128EB500C279BB /* SoundBoard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 22DAE65D27128EB500C279BB /* SoundBoard.xcdatamodeld */; };
 		22DAE701271293A900C279BB /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DAE700271293A900C279BB /* Persistence.swift */; };
@@ -75,7 +77,7 @@
 		22800FC92711453C009B9DC9 /* FileOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOpener.swift; sourceTree = "<group>"; };
 		228592622711520F0072F7EB /* Soundboard--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Soundboard--iOS--Info.plist"; sourceTree = "<group>"; };
 		228BF4C7292B114D00B04B86 /* Waveform2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Waveform2.swift; sourceTree = "<group>"; };
-		228BF4D6292B2C0200B04B86 /* Waveform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Waveform; path = ../../../../../git/Waveform; sourceTree = "<group>"; };
+		22A28814292F2CA700673322 /* waveform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = waveform; path = libraries/waveform; sourceTree = "<group>"; };
 		22DAE65E27128EB500C279BB /* SoundBoard.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SoundBoard.xcdatamodel; sourceTree = "<group>"; };
 		22DAE700271293A900C279BB /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -86,7 +88,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22FC094E28F5012800C1265D /* FDWaveformView in Frameworks */,
-				228BF4D8292B2EC600B04B86 /* Waveform in Frameworks */,
+				22A28816292F2CED00673322 /* Waveform in Frameworks */,
 				229124F7291498E70007547A /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +97,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22A28818292F2CF300673322 /* Waveform in Frameworks */,
+				22A2881A292F2CF600673322 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,7 +198,7 @@
 		228BF4CD292B228200B04B86 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				228BF4D6292B2C0200B04B86 /* Waveform */,
+				22A28814292F2CA700673322 /* waveform */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -218,7 +222,7 @@
 			packageProductDependencies = (
 				22FC094D28F5012800C1265D /* FDWaveformView */,
 				229124F6291498E70007547A /* Introspect */,
-				228BF4D7292B2EC600B04B86 /* Waveform */,
+				22A28815292F2CED00673322 /* Waveform */,
 			);
 			productName = "Soundboard (iOS)";
 			productReference = 22800F912711373E009B9DC9 /* Soundboard.app */;
@@ -237,6 +241,10 @@
 			dependencies = (
 			);
 			name = "Soundboard (macOS)";
+			packageProductDependencies = (
+				22A28817292F2CF300673322 /* Waveform */,
+				22A28819292F2CF600673322 /* Introspect */,
+			);
 			productName = "Soundboard (macOS)";
 			productReference = 22800F972711373E009B9DC9 /* Soundboard.app */;
 			productType = "com.apple.product-type.application";
@@ -835,11 +843,20 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		228BF4D7292B2EC600B04B86 /* Waveform */ = {
+		229124F6291498E70007547A /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 229124F5291498E70007547A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
+		22A28815292F2CED00673322 /* Waveform */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Waveform;
 		};
-		229124F6291498E70007547A /* Introspect */ = {
+		22A28817292F2CF300673322 /* Waveform */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Waveform;
+		};
+		22A28819292F2CF600673322 /* Introspect */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 229124F5291498E70007547A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
 			productName = Introspect;
