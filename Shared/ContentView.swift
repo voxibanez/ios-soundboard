@@ -330,13 +330,15 @@ struct SoundGridView: View {
     
     var body: some View {
                 GeometryReader { geometry in
+                    VStack{
                         ScrollViewReader { reader in
                             ScrollView(.horizontal
-                                       , showsIndicators: true) {
+                                       , showsIndicators: false) {
+                                
                                 ZStack(alignment: .topLeading){
                                     ZStack(alignment: .topLeading){
                                         self.generateContent(in: geometry)
-                                    
+                                        
                                     }.fixedSize(horizontal: false, vertical: true).background(GeometryReader {gp -> Color in
                                         DispatchQueue.main.async {
                                             var numPages: Double = gp.size.width / UIScreen.main.bounds.size.width
@@ -351,33 +353,52 @@ struct SoundGridView: View {
                                     getPadding()
                                     Color.clear
                                 }.fixedSize(horizontal: false, vertical: false)
-                                .background(GeometryReader {
+                                    .background(GeometryReader {
                                         Color.clear.preference(key: ViewOffsetKey.self,
-                                            value: -$0.frame(in: .named("scroll")).origin.x)
+                                                               value: -$0.frame(in: .named("scroll")).origin.x)
                                     })
-                                .onPreferenceChange(ViewOffsetKey.self) { _ in
-                                    // All sounds must be stopped when scrolling due to the gesture recognizer losing the position of touches.
-                                    // Otherwise, touches will get perminently stuck on
-                                    viewModel.stopAllSounds()
-                                    
-                                }
+                                    .onPreferenceChange(ViewOffsetKey.self) { value in
+                                        // All sounds must be stopped when scrolling due to the gesture recognizer losing the position of touches.
+                                        // Otherwise, touches will get perminently stuck on
+                                        viewModel.stopAllSounds()
+                                        
+                                        // Store current page offset
+                                        DispatchQueue.main.async {
+                                            if value < .infinity{
+                                                withAnimation(.easeInOut(duration: 0.2)){
+                                                    self.currentPage = Int(round(value / UIScreen.main.bounds.size.width))
+                                                }
+                                            }
+                                        }
+                                        
+                                        
+                                    }
                             }.introspectScrollView(){ scrollview in
                                 scrollview.isPagingEnabled = true
-                                scrollview.showsHorizontalScrollIndicator = true
-                                scrollview.horizontalScrollIndicatorInsets = .zero
+                                scrollview.showsHorizontalScrollIndicator = false
+                                scrollview.showsVerticalScrollIndicator = false
                                 scrollview.alwaysBounceHorizontal = true
                             }
+                            //.padding(.leading, UIApplication.shared.windows[0].safeAreaInsets.left)
+                            .padding(.leading, UIApplication
+                                .shared
+                                .connectedScenes
+                                .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+                                .first { $0.isKeyWindow }!.safeAreaInsets.left)
                             .coordinateSpace(name: "scroll")
-
                             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
                                 //Orient scrollview to nearest page
                                 print("Setting to closest page in orientation")
                                 // TODO: Calculate nearest page instead of scrolling to first page
-                                reader.scrollTo(0, anchor: .leading)
+                                reader.scrollTo(min(currentPage, totalPages), anchor: .leading)
                             }
                         }
-                        
-
+                        HStack(spacing: 15){
+                            ForEach(0..<self.totalPages, id: \.self) { value in
+                                Capsule().fill(value == self.currentPage ? .white : .gray).frame(width: value == self.currentPage ? 10 : 7, height: value == self.currentPage ? 10 : 7)
+                            }
+                        }
+                    }
         }
         //.frame(height: totalHeight)// << variant for ScrollView/List
                 .frame(alignment: .topLeading) // << variant for VStack
@@ -397,6 +418,7 @@ struct SoundGridView: View {
         = CGFloat.infinity   // << variant for VStack
     
     private func generateContent(in g: GeometryProxy) -> some View {
+
         var width = CGFloat.zero
         var height = CGFloat.zero
         
@@ -440,12 +462,16 @@ struct SoundGridView: View {
                         .background(GeometryReader {gp -> Color in
                             DispatchQueue.main.async {
                                 let ratio = CGFloat(1.0)
+                                let x = gp.frame(in: .global).midX - (gp.size.width / 2.0)
+                                let y = gp.frame(in: .global).midY - (gp.size.height / 2.0)
+                                let width = gp.size.width
+                                let height = gp.size.height
                                 let adjustedX = gp.frame(in: .global).midX - (gp.size.width / 2.0 * ratio)
                                 let adjustedY = gp.frame(in: .global).midY - (gp.size.height / 2.0 * ratio)
                                 let adjustedWidth = gp.size.width * ratio
                                 let adjustedHeight = gp.size.height * ratio
                                 soundButtonBoundsDictAdjusted[soundButton] = CGRect(x: adjustedX, y: adjustedY, width: adjustedWidth, height: adjustedHeight)
-                                soundButtonBoundsDict[soundButton] = CGRect(x: adjustedX, y: adjustedY, width: adjustedWidth, height: adjustedHeight)
+                                soundButtonBoundsDict[soundButton] = CGRect(x: x, y: y, width: width, height: height)
 
                                 
                             }
